@@ -1,3 +1,5 @@
+"use client";
+
 import axios from "axios";
 
 const submitReview = async (productId, changes) => {
