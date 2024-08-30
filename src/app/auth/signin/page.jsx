@@ -1,11 +1,13 @@
-import { signIn } from 'next-auth/react';
+"use client";
+
+import { signIn } from "next-auth/react";
 
 export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    const result = await signIn('credentials', { email, password });
+    const result = await signIn("credentials", { email, password });
   };
 
   return (
