@@ -116,7 +116,7 @@ const ImageUploader = ({ currentImage, onImageChange }) => {
           <img
             src={currentImage}
             alt="Current"
-            className="w-60 h-60 object-cover rounded"
+            className="w-[320px] h-60 object-cover rounded"
           />
         ) : (
           <div className="w-60 h-60 bg-gray-200 flex items-center justify-center text-gray-500 rounded">

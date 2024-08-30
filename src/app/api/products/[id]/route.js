@@ -10,6 +10,7 @@ export async function GET(req, { params }) {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   try {
     await connectMongoDB();
 
@@ -39,20 +40,24 @@ export async function PUT(req, { params }) {
   try {
     await connectMongoDB();
 
-    const { product_id } = params;
+    const { id } = params;
     const updatedData = await req.json();
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      product_id,
-      updatedData,
-      { new: true }
-    );
+    const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
 
     if (!updatedProduct) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(updatedProduct);
+    return NextResponse.json(
+      {
+        message: "Product has been successfully updated",
+        updatedProduct,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error updating product:", error);
     return NextResponse.json(

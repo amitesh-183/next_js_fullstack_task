@@ -1,41 +1,30 @@
-// src/app/api/profile/stats/route.js
-
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import connectMongoDB from "@/lib/mongodb";
 import { Review } from "@/models/Review";
+import connectMongoDB from "@/lib/mongodb";
 
 export async function GET() {
-  const session = await getServerSession();
-
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
     await connectMongoDB();
 
-    const userId = session.user.id;
-
-    const totalRequests = await Review.countDocuments({ userId });
+    const totalRequests = await Review.countDocuments();
     const approvedRequests = await Review.countDocuments({
-      userId,
       status: "approved",
     });
     const rejectedRequests = await Review.countDocuments({
-      userId,
       status: "rejected",
     });
+    const pendingRequests = await Review.countDocuments({ status: "pending" });
 
     return NextResponse.json({
       totalRequests,
       approvedRequests,
       rejectedRequests,
+      pendingRequests,
     });
   } catch (error) {
-    console.error("Error fetching profile stats:", error);
+    console.error("Error fetching stats:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Error fetching stats" },
       { status: 500 }
     );
   }

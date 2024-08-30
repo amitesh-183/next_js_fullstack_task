@@ -25,11 +25,7 @@ export default function ProductList({ products, userRole }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
           <Link
-            href={`${
-              userRole === "team-member"
-                ? `/edit-product/${product._id}`
-                : `/product/${product._id}`
-            }`}
+            href={`/product/${product._id}`}
             key={product.id}
             className="border rounded-lg overflow-hidden shadow-lg"
           >
@@ -43,7 +39,7 @@ export default function ProductList({ products, userRole }) {
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
               <p className="text-gray-600 mb-2">
-                ${parseFloat(product.price).toFixed(2)}
+                ₹{parseFloat(product.price).toFixed(2)}
               </p>
               <p className="text-gray-500 text-sm mb-4">
                 {product.description.substring(0, 100)}...

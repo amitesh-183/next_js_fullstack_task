@@ -1,60 +1,91 @@
 "use client";
 
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import LottieAnimation from "@/components/Loader";
 import Link from "next/link";
 
-const PendingRequests = () => {
+const ReviewList = () => {
   const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data: session, status } = useSession();
-  const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") {
-      if (session.user.role === "admin") {
-        fetchReviews();
-      } else {
-        router.push("/dashboard/admin"); // Redirect to an unauthorized page or dashboard
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get("/api/review");
+        setReviews(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        setLoading(false);
       }
-    } else if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status]);
+    };
 
-  const fetchReviews = async () => {
-    try {
-      const response = await axios.get("/api/review", {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        params: {
-          status: "pending",
-        },
-      });
-      setReviews(response.data);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
+    if (status !== "loading" && session) {
+      fetchReviews();
+    }
+  }, [session, status]);
+
+  if (loading) {
+    return <LottieAnimation />;
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "approved":
+        return "text-green-500";
+      case "rejected":
+        return "text-red-500";
+      default:
+        return "text-yellow-500";
     }
   };
 
+  const ReviewCard = ({ review }) => (
+    <div
+      className={`border rounded-lg p-4 shadow-sm transition-shadow duration-200 ${
+        review.status === "rejected"
+          ? "opacity-50 bg-gray-100"
+          : review.status === "pending"
+          ? "hover:shadow-md cursor-pointer"
+          : ""
+      }`}
+    >
+      <p>
+        <strong>Product ID:</strong> {review.productId}
+      </p>
+      <p>
+        <strong>Status:</strong>{" "}
+        <span className={getStatusColor(review.status)}>{review.status}</span>
+      </p>
+      <p>
+        <strong>Submitted by:</strong> {review.userId}
+      </p>
+      <p>
+        <strong>Submitted on:</strong>{" "}
+        {new Date(review.createdAt).toLocaleString()}
+      </p>
+    </div>
+  );
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Pending Requests</h1>
-      <ul>
-        {reviews.map((review) => (
-          <li key={review._id} className="mb-4 p-4 border rounded">
-            <Link href={`/pending-requests/${review._id}`}>
-              <p>Product ID: {review.productId}</p>
-              <p>Submitted by: {review.userId}</p>
-              <p>Submitted on: {new Date(review.createdAt).toLocaleString()}</p>
+    <div className="container mx-auto p-4 max-w-6xl">
+      <h1 className="text-2xl font-bold mb-6">All Reviews</h1>
+      {reviews.length === 0 ? (
+        <p>No reviews found.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {reviews.map((review) => (
+            <Link href={`/pending-requests/${review._id}`} key={review._id}>
+              <ReviewCard review={review} />
             </Link>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-export default PendingRequests;
+export default ReviewList;

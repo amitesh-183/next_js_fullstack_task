@@ -67,7 +67,7 @@ const AddProductPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800 p-8">
+    <div className="min-h-screen text-gray-800 p-8">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold mb-6">Add New Product</h1>
         <form onSubmit={handleSubmit}>
@@ -130,7 +130,7 @@ const AddProductPage = () => {
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+            className="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 disabled:bg-blue-300"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Adding Product..." : "Add Product"}

@@ -8,7 +8,8 @@ const Header = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
   const userRole = session?.user?.role?.toLowerCase();
-  const shouldHideHeader = pathname === "/login" || pathname === "/register";
+  const shouldHideHeader =
+    pathname === "/login" || pathname === "/register" || pathname === "/";
   return (
     <header
       className={`bg-black/20 backdrop-blur-sm max-w-6xl px-8 mx-auto my-2 rounded-full shadow text-black p-4 
