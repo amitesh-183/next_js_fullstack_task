@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import ImageUploader from "@/components/ImageUploader";
+import LottieAnimation from "@/components/Loader";
 
 const AddProductPage = () => {
   const { data: session, status } = useSession();
@@ -59,7 +60,11 @@ const AddProductPage = () => {
   };
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <LottieAnimation />
+      </>
+    );
   }
 
   if (status === "authenticated" && session.user.role !== "Team member") {

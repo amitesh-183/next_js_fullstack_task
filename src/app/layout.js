@@ -7,7 +7,7 @@ import AuthProvider from "@/lib/auth";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "ManagX",
+  title: "ManaGX",
   description: "Full-stack authentication with Next.js and Next-Auth",
 };
 
